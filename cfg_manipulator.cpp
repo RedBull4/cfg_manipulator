@@ -9,12 +9,12 @@ namespace cfg_manipulator {
 
 void print_error(CM_C_STRING message, size_t line_id, bool _exit) {
     if (line_id > 0)
-        printf(string("ERROR[cfg_manipulator]: Line  %s\n" +
+        printf(string("\x1B[31mERROR\x1B[0m[cfg_manipulator]: Line  %s\n" +
                       to_string(line_id) + ", ")
                    .c_str(),
                message);
     else
-        printf("ERROR[cfg_manipulator]: %s\n", message);
+        printf("\x1B[31mERROR\x1B[0m[cfg_manipulator]: %s\n", message);
 
     if (_exit)
         exit(EXIT_FAILURE);
