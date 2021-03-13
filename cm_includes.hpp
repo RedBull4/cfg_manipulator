@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <vector>
 #include <algorithm>
+#include <locale>
 using namespace std;
 
 #endif // cm_includes_hpp

@@ -24,19 +24,42 @@ cfg_file::cfg_file() {}
 
 char *default_string() { return (char *)malloc(WCHAR_MAX); }
 
-void check_file_type(CM_C_STRING file_path) {
-    CM_STRING file_type = default_string();
+/*CM_C_STRING trim_characters(CM_C_STRING str, size_t begin, size_t end,
+                            CM_C_CHAR character) {
+    CM_STRING output = default_string();
+
+    for (size_t i = begin; i < end; i++) {
+        if (str[i] != character)
+            output[strlen(output)] = str[i];
+    }
+
+    return output;
+}*/
+
+CM_C_STRING get_file_type(CM_C_STRING file_path) {
+    CM_STRING output = default_string();
 
     for (size_t i = 0; i < strlen(file_path); i++) {
-        file_type[i] = file_path[(strlen(file_path) - 1) - i];
+        output[i] = file_path[(strlen(file_path) - 1) - i];
+
         if (file_path[(strlen(file_path) - 1) - i] == '.')
             break;
     }
 
-    reverse(file_type, file_type + strlen(file_type));
+    reverse(output, output + strlen(output));
+
+    return output;
+}
+
+void check_file_type(CM_C_STRING file_path) {
+    CM_STRING file_type = default_string();
+
+    strcpy(file_type, get_file_type(file_path));
 
     for (size_t i = 0; i < CM_ARRAY_SIZE(allowed_file_types); i++) {
-        if (strcmp(file_type, allowed_file_types[i]) > 0)
+        if (strcmp(file_type, allowed_file_types[i]) == 0)
+            break;
+        else
             print_error("Unrecognized file type.", 0, true);
     }
 }
