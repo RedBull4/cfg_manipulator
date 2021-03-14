@@ -20,6 +20,8 @@ namespace cfg_manipulator {
         bool is_open();
 
         void close();
+
+        CM_C_STRING read(CM_C_STRING line_name);
     };
 } // namespace cfg_manipulator
 
