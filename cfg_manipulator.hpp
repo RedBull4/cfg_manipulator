@@ -22,6 +22,8 @@ namespace cfg_manipulator {
         void close();
 
         CM_C_STRING read(CM_C_STRING line_name);
+
+        CM_C_STRING read(CM_C_STRING namespace_name, CM_C_STRING line_name);
     };
 } // namespace cfg_manipulator
 
