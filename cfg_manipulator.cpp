@@ -162,8 +162,11 @@ namespace cfg_manipulator {
                 file_data.namespaces.at(namespace_name).push_back(line);
         }
 
-        for (string line : file_data.namespaces.at("suka")) {
-            CM_LOG(line.c_str());
+        for (auto it : file_data.namespaces) {
+            CM_LOG(string("namespace: " + it.first).c_str());
+            for (string line : file_data.namespaces.at(it.first)) {
+                CM_LOG(line.c_str());
+            }
         }
 
         exit(EXIT_SUCCESS);
