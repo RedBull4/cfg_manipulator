@@ -132,7 +132,7 @@ namespace cfg_manipulator {
             print_error("line contains undefined characters.", line.first);
     }
 
-    void parse_lines() {
+    void parse_file() {
         CM_STRING line = default_string(), namespace_name = default_string();
         size_t line_id = 0;
         bool _namespace = false;
@@ -161,6 +161,12 @@ namespace cfg_manipulator {
             else
                 file_data.namespaces.at(namespace_name).push_back(line);
         }
+
+        for (string line : file_data.namespaces.at("suka")) {
+            CM_LOG(line.c_str());
+        }
+
+        exit(EXIT_SUCCESS);
     }
 
     CM_C_STRING get_file_type(CM_C_STRING file_path) {
@@ -220,7 +226,7 @@ void cfg_file::open(CM_C_STRING file_path) {
     else
         print_error("No such file or directory.", 0);
 
-    parse_lines();
+    parse_file();
 }
 
 bool cfg_file::is_open() { return file != NULL; }
