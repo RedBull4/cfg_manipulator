@@ -6,7 +6,7 @@ namespace cfg_manipulator {
 
     struct file_data {
         vector<pair<size_t, string>> lines;
-        map<string, vector<string>> namespaces;
+        map<string, vector<pair<size_t, string>>> namespaces;
     } file_data;
 
     void print_error(CM_C_STRING message, size_t line_id) {
@@ -80,17 +80,17 @@ namespace cfg_manipulator {
         return output;
     }
 
-    CM_C_STRING get_line_name(const pair<size_t, string> line) {
+    CM_C_STRING get_line_name(CM_C_STRING line) {
         CM_STRING output = default_string();
         bool _bool = false;
 
-        for (size_t i = 0; i < strlen(line.second.c_str()); i++) {
-            if (line.second.c_str()[i] == '=')
+        for (size_t i = 0; i < strlen(line); i++) {
+            if (line[i] == '=')
                 break;
-            if (line.second.c_str()[i] != ' ')
+            if (line[i] != ' ')
                 _bool = true;
             if (_bool)
-                output[strlen(output)] = line.second.c_str()[i];
+                output[strlen(output)] = line[i];
         }
 
         for (size_t i = 0; i < strlen(output); i++) {
@@ -119,7 +119,7 @@ namespace cfg_manipulator {
                 "the line shoud be in the following style: line = \"value\".",
                 line.first);
 
-        if (get_characters_count(get_line_name(line), 0,
+        if (get_characters_count(get_line_name(line.second.c_str()), 0,
                                  strlen(line.second.c_str()), ' ') != 0)
             print_error("spaces are not allowed in line names.", line.first);
 
@@ -149,7 +149,8 @@ namespace cfg_manipulator {
                 strcpy(namespace_name, get_namespace_name(line));
 
                 file_data.namespaces.insert(
-                    pair<string, vector<string>>(namespace_name, NULL));
+                    pair<string, vector<pair<size_t, string>>>(namespace_name,
+                                                               NULL));
 
                 continue;
             }
@@ -159,17 +160,18 @@ namespace cfg_manipulator {
             if (!_namespace)
                 file_data.lines.push_back(pair<size_t, string>(line_id, line));
             else
-                file_data.namespaces.at(namespace_name).push_back(line);
+                file_data.namespaces.at(namespace_name)
+                    .push_back(pair<size_t, string>(line_id, line));
         }
 
-        for (auto it : file_data.namespaces) {
+        /*for (auto it : file_data.namespaces) {
             CM_LOG(string("namespace: " + it.first).c_str());
             for (string line : file_data.namespaces.at(it.first)) {
                 CM_LOG(line.c_str());
             }
         }
 
-        exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);*/
     }
 
     CM_C_STRING get_file_type(CM_C_STRING file_path) {
@@ -200,7 +202,7 @@ namespace cfg_manipulator {
         }
     }
 
-    CM_C_STRING get_line_value(size_t line_id, CM_C_STRING line) {
+    CM_C_STRING get_line_value(CM_C_STRING line) {
         CM_STRING output = default_string();
         bool _begin = false;
 
@@ -240,26 +242,40 @@ void cfg_file::close() {
 }
 
 CM_C_STRING cfg_file::read(CM_C_STRING line_name) {
-    pair<size_t, string> output;
+    CM_STRING output = default_string();
 
     if (!is_open())
         print_error("File is not open.", 0);
 
     for (size_t i = 0; i < file_data.lines.size(); i++) {
-        if (strcmp(get_line_name(file_data.lines.at(i)), line_name) == 0)
-            output = file_data.lines.at(i);
+        if (strcmp(get_line_name(file_data.lines.at(i).second.c_str()),
+                   line_name) == 0)
+            strcpy(output, file_data.lines.at(i).second.c_str());
     }
 
     if (strcmp(get_line_name(output), "") == 0)
-        print_error(string("The given name could not be found: " +
-                           string(line_name) + '.')
-                        .c_str(),
-                    0);
+        print_error("", 0);
 
-    return get_line_value(output.first, output.second.c_str());
+    return get_line_value(output);
 }
 
 CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
+    CM_STRING output = default_string();
+
     if (!is_open())
         print_error("File is not open.", 0);
+
+    if (file_data.namespaces.count(namespace_name) != 0) {
+        for (pair<size_t, string> line :
+             file_data.namespaces.at(namespace_name)) {
+            if (strcmp(get_line_name(line.second.c_str()), line_name) == 0)
+                strcpy(output, line.second.c_str());
+        }
+
+        if (strcmp(get_line_name(output), "") == 0)
+            print_error("", 0);
+    } else
+        print_error("", 0);
+
+    return get_line_value(output);
 }
