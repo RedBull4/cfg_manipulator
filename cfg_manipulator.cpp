@@ -70,6 +70,62 @@ CM_C_STRING get_namespace_name(CM_C_STRING line) {
     return output;
 }
 
+size_t get_characters_count(CM_C_STRING str, size_t begin, size_t end,
+                            CM_C_CHAR character) {
+    size_t output = 0;
+
+    for (size_t i = begin; i < strlen(str) - (strlen(str) - end); i++) {
+        if (str[i] == character)
+            output++;
+    }
+
+    return output;
+}
+
+CM_C_STRING get_line_name(size_t line_id, CM_C_STRING line) {
+    CM_STRING output = default_string();
+    bool _bool = false;
+
+    for (size_t i = 0; i < strlen(line); i++) {
+        if (line[i] == '=')
+            break;
+        if (line[i] != ' ')
+            _bool = true;
+        if (_bool)
+            output[strlen(output)] = line[i];
+    }
+
+    for (size_t i = 0; i < strlen(output); i++) {
+        if (output[(strlen(output) - 1) - i] != ' ')
+            break;
+        output[(strlen(output) - 1) - i] = 0;
+    }
+
+    return output;
+}
+
+void scan_line_for_errors(size_t line_id, CM_C_STRING line) {
+    size_t characters[2] = {0, 0};
+
+    for (size_t i = 0; i < strlen(line); i++) {
+        if (line[i] == '=')
+            characters[0]++;
+        if (line[i] == '"')
+            characters[1]++;
+    }
+
+    if (characters[0] != 1 || characters[1] != 2)
+        print_error(
+            "the line shoud be in the following style: line = \"value\".",
+            line_id);
+
+    if (get_characters_count(get_line_name(line_id, line), 0, strlen(line),
+                             ' ') != 0)
+        print_error("spaces are not allowed in line names.", line_id);
+
+    // ...............................................
+}
+
 void parse_lines() {
     CM_STRING line = default_string(), namespace_name = default_string();
     size_t line_id = 0;
@@ -91,6 +147,8 @@ void parse_lines() {
 
             continue;
         }
+
+        scan_line_for_errors(line_id, line);
 
         if (!_namespace)
             file_data.lines.push_back(pair<size_t, string>(line_id, line));
@@ -143,34 +201,6 @@ bool cfg_file::is_open() { return file_data.file != NULL; }
 void cfg_file::close() {
     fclose(file_data.file);
     file_data.file = NULL;
-}
-
-CM_C_STRING get_line_name(size_t line_id, CM_C_STRING line) {
-    CM_STRING output = default_string();
-    bool _bool = false;
-
-    for (size_t i = 0; i < strlen(line); i++) {
-        if (line[i] == '=')
-            break;
-        if (line[i] != ' ')
-            _bool = true;
-        if (_bool)
-            output[strlen(output)] = line[i];
-    }
-
-    for (size_t i = 0; i < strlen(output); i++) {
-        if (output[(strlen(output) - 1) - i] != ' ')
-            break;
-        output[(strlen(output) - 1) - i] = 0;
-    }
-
-    for (size_t i = 0; i < strlen(output); i++) {
-        if (output[i] == ' ') {
-            print_error("spaces in line names are not allowed.", line_id);
-        }
-    }
-
-    return output;
 }
 
 CM_C_STRING get_line_value(size_t line_id, CM_C_STRING line) {
