@@ -51,7 +51,7 @@ namespace cfg_manipulator {
 
     CM_C_STRING get_namespace_name(CM_C_STRING line) {
         CM_STRING output = default_string();
-        bool _begin = false;
+        bool _begin = false, _bool = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
             if (line[i] == '[') {
@@ -59,10 +59,20 @@ namespace cfg_manipulator {
                 continue;
             }
 
+            if (_begin && line[i] != ' ')
+                _bool = true;
+
             if (line[i] == ']')
                 break;
 
-            output[strlen(output)] = line[i];
+            if (_bool)
+                output[strlen(output)] = line[i];
+        }
+
+        for (size_t i = 0; i < strlen(output); i++) {
+            if (output[(strlen(output) - 1) - i] != ' ')
+                break;
+            output[(strlen(output) - 1) - i] = 0;
         }
 
         return output;
@@ -94,9 +104,10 @@ namespace cfg_manipulator {
         }
 
         for (size_t i = 0; i < strlen(output); i++) {
+            if (output[(strlen(output) - 1) - i] == ' ')
+                output[(strlen(output) - 1) - i] = 0;
             if (output[(strlen(output) - 1) - i] != ' ')
                 break;
-            output[(strlen(output) - 1) - i] = 0;
         }
 
         return output;
@@ -114,22 +125,52 @@ namespace cfg_manipulator {
                 characters[1]++;
         }
 
-        if (characters[0] != 1 || characters[1] != 2)
-            print_error(
-                "the line shoud be in the following style: line = \"value\".",
-                line.first);
+        if (line.second != "" &&
+            get_characters_count(line.second.c_str(), 0, line.second.size(),
+                                 ' ') != line.second.size()) {
+            if (characters[0] != 1 || characters[1] != 2)
+                print_error("the line shoud be in the following style: line = "
+                            "\"value\".",
+                            line.first);
 
-        if (get_characters_count(get_line_name(line.second.c_str()), 0,
-                                 strlen(line.second.c_str()), ' ') != 0)
-            print_error("spaces are not allowed in line names.", line.first);
+            if (get_characters_count(get_line_name(line.second.c_str()), 0,
+                                     strlen(line.second.c_str()), ' ') != 0)
+                print_error("spaces are not allowed in line names.",
+                            line.first);
 
-        for (size_t i = 0; i < strlen(_line); i++) {
-            if (_line[i] == '=' && _line[i + 1] != '"')
+            for (size_t i = 0; i < strlen(_line); i++) {
+                if (_line[i] == '=' && _line[i + 1] != '"')
+                    print_error("line contains undefined characters.",
+                                line.first);
+            }
+
+            if (_line[strlen(_line) - 1] != '"')
                 print_error("line contains undefined characters.", line.first);
         }
+    }
 
-        if (_line[strlen(_line) - 1] != '"')
-            print_error("line contains undefined characters.", line.first);
+    void trim_comment(CM_STRING &line) {
+        CM_STRING output = default_string();
+        bool quote = false;
+
+        for (size_t i = 0; i < strlen(line); i++) {
+            if (!quote) {
+                if (line[i] == '#')
+                    break;
+            }
+
+            output[strlen(output)] = line[i];
+
+            if (line[i] == '"' && !quote) {
+                quote = true;
+                continue;
+            } else if (line[i] == '"' && quote) {
+                quote = false;
+                continue;
+            }
+        }
+
+        strcpy(line, output);
     }
 
     void parse_file() {
@@ -141,6 +182,8 @@ namespace cfg_manipulator {
             line_id++;
 
             line[strcspn(line, "\n")] = 0;
+
+            trim_comment(line);
 
             if (is_namespace(line)) {
                 if (!_namespace)
@@ -163,15 +206,6 @@ namespace cfg_manipulator {
                 file_data.namespaces.at(namespace_name)
                     .push_back(pair<size_t, string>(line_id, line));
         }
-
-        /*for (auto it : file_data.namespaces) {
-            CM_LOG(string("namespace: " + it.first).c_str());
-            for (string line : file_data.namespaces.at(it.first)) {
-                CM_LOG(line.c_str());
-            }
-        }
-
-        exit(EXIT_SUCCESS);*/
     }
 
     CM_C_STRING get_file_type(CM_C_STRING file_path) {

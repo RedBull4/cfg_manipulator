@@ -2,10 +2,10 @@
 #include <iostream>
 using namespace std;
 
-cfg_manipulator::cfg_file cfg_file;
+cfg_manipulator::cfg_file file;
 
 int main() {
-    cfg_file.open("settings.cfg");
+    file.open("settings.cfg");
 
-    CM_LOG(cfg_file.read("sandro", "alo"));
+    cout << file.read("namespace", "line") << endl;
 }
