@@ -19,11 +19,11 @@ namespace cfg_manipulator {
         exit(EXIT_FAILURE);
     }
 
-    char *default_string() { return (char *)malloc(WCHAR_MAX); }
+    char *standard_string() { return (char *)malloc(WCHAR_MAX); }
 
-    CM_C_STRING trim_characters(CM_C_STRING str, size_t begin, size_t end,
-                                CM_C_CHAR character) {
-        CM_STRING output = default_string();
+    CM_C_STRING trim_characters(CM_C_STRING str, const size_t begin,
+                                const size_t end, CM_C_CHAR character) {
+        CM_STRING output = standard_string();
 
         for (size_t i = begin; i < end; i++) {
             if (str[i] != character)
@@ -43,14 +43,11 @@ namespace cfg_manipulator {
                 end = true;
         }
 
-        if (begin && end)
-            return true;
-        else
-            return false;
+        return true ? begin && end : false;
     }
 
     CM_C_STRING get_namespace_name(CM_C_STRING line) {
-        CM_STRING output = default_string();
+        CM_STRING output = standard_string();
         bool _begin = false, _bool = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
@@ -78,8 +75,8 @@ namespace cfg_manipulator {
         return output;
     }
 
-    size_t get_characters_count(CM_C_STRING str, size_t begin, size_t end,
-                                CM_C_CHAR character) {
+    size_t get_characters_count(CM_C_STRING str, const size_t begin,
+                                const size_t end, CM_C_CHAR character) {
         size_t output = 0;
 
         for (size_t i = begin; i < strlen(str) - (strlen(str) - end); i++) {
@@ -91,7 +88,7 @@ namespace cfg_manipulator {
     }
 
     CM_C_STRING get_line_name(CM_C_STRING line) {
-        CM_STRING output = default_string();
+        CM_STRING output = standard_string();
         bool _bool = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
@@ -150,7 +147,7 @@ namespace cfg_manipulator {
     }
 
     void trim_comment(CM_STRING &line) {
-        CM_STRING output = default_string();
+        CM_STRING output = standard_string();
         bool quote = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
@@ -174,7 +171,7 @@ namespace cfg_manipulator {
     }
 
     void parse_file() {
-        CM_STRING line = default_string(), namespace_name = default_string();
+        CM_STRING line = standard_string(), namespace_name = standard_string();
         size_t line_id = 0;
         bool _namespace = false;
 
@@ -209,7 +206,7 @@ namespace cfg_manipulator {
     }
 
     CM_C_STRING get_file_type(CM_C_STRING file_path) {
-        CM_STRING output = default_string();
+        CM_STRING output = standard_string();
 
         for (size_t i = 0; i < strlen(file_path); i++) {
             output[i] = file_path[(strlen(file_path) - 1) - i];
@@ -224,7 +221,7 @@ namespace cfg_manipulator {
     }
 
     void check_file_type(CM_C_STRING file_path) {
-        CM_STRING file_type = default_string();
+        CM_STRING file_type = standard_string();
 
         strcpy(file_type, get_file_type(file_path));
 
@@ -237,7 +234,7 @@ namespace cfg_manipulator {
     }
 
     CM_C_STRING get_line_value(CM_C_STRING line) {
-        CM_STRING output = default_string();
+        CM_STRING output = standard_string();
         bool _begin = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
@@ -276,7 +273,7 @@ void cfg_file::close() {
 }
 
 CM_C_STRING cfg_file::read(CM_C_STRING line_name) {
-    CM_STRING output = default_string();
+    CM_STRING output = standard_string();
 
     if (!is_open())
         print_error("File is not open.", 0);
@@ -294,7 +291,7 @@ CM_C_STRING cfg_file::read(CM_C_STRING line_name) {
 }
 
 CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
-    CM_STRING output = default_string();
+    CM_STRING output = standard_string();
 
     if (!is_open())
         print_error("File is not open.", 0);
@@ -307,9 +304,16 @@ CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
         }
 
         if (strcmp(get_line_name(output), "") == 0)
-            print_error("", 0);
+            print_error(string("Unable to find line \"" + string(line_name) +
+                               "\" in namespace \"" + string(namespace_name) +
+                               "\".")
+                            .c_str(),
+                        0);
     } else
-        print_error("", 0);
+        print_error(string("Unable to find namespace \"" +
+                           string(namespace_name) + "\".")
+                        .c_str(),
+                    0);
 
     return get_line_value(output);
 }
