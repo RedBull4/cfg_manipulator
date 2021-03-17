@@ -88,23 +88,26 @@ namespace cfg_manipulator {
     }
 
     CM_C_STRING get_line_name(CM_C_STRING line) {
-        CM_STRING output = standard_string();
+        CM_STRING _line = standard_string(), output = standard_string();
         bool _bool = false;
 
         for (size_t i = 0; i < strlen(line); i++) {
-            if (line[i] == '=')
+            if (line[i] == '=') {
+                _bool = false;
                 break;
+            }
             if (line[i] != ' ')
                 _bool = true;
             if (_bool)
-                output[strlen(output)] = line[i];
+                _line[strlen(_line)] = line[i];
         }
 
-        for (size_t i = 0; i < strlen(output); i++) {
-            if (output[(strlen(output) - 1) - i] == ' ')
-                output[(strlen(output) - 1) - i] = 0;
-            if (output[(strlen(output) - 1) - i] != ' ')
-                break;
+        for (size_t i = 0; i < strlen(_line); i++) {
+            if (_line[(strlen(_line) - 1) - i] != ' ')
+                _bool = true;
+            if (_bool)
+                output[(strlen(_line) - 1) - i] =
+                    _line[(strlen(_line) - 1) - i];
         }
 
         return output;
