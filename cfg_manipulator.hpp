@@ -1,6 +1,8 @@
 #ifndef cfg_manipulator_hpp
 #define cfg_manipulator_hpp
 
+#include <stdio.h>
+
 #define CM_ARRAY_SIZE(x) sizeof(x) / sizeof(*x)
 #define CM_LOG(x) printf("CM_LOG: %s\n", x);
 
@@ -14,6 +16,8 @@ namespace cfg_manipulator {
     class cfg_file {
       public:
         cfg_file();
+
+        cfg_file(CM_C_STRING file_path);
 
         void open(CM_C_STRING file_path);
 

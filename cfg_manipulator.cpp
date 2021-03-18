@@ -33,14 +33,20 @@ namespace cfg_manipulator {
         return output;
     }
 
-    bool is_namespace(CM_C_STRING line) {
+    bool is_namespace(const size_t line_id, CM_C_STRING line) {
         bool begin = false, end = false;
+        CM_C_STRING _line = trim_characters(line, 0, strlen(line), ' ');
 
-        for (size_t i = 0; i < strlen(line); i++) {
-            if (line[i] == '[' && !end)
+        for (size_t i = 0; i < strlen(_line); i++) {
+            if (_line[i] == '[' && !end)
                 begin = true;
-            if (line[i] == ']')
+            if (_line[i] == ']')
                 end = true;
+        }
+
+        if (begin && end) {
+            if (_line[0] != '[' || _line[strlen(_line) - 1] != ']')
+                print_error("namespace contains undefined character.", line_id);
         }
 
         return true ? begin && end : false;
@@ -79,7 +85,7 @@ namespace cfg_manipulator {
                                 const size_t end, CM_C_CHAR character) {
         size_t output = 0;
 
-        for (size_t i = begin; i < strlen(str) - (strlen(str) - end); i++) {
+        for (size_t i = begin; i < end; i++) {
             if (str[i] == character)
                 output++;
         }
@@ -113,39 +119,35 @@ namespace cfg_manipulator {
         return output;
     }
 
-    void scan_line_for_errors(const pair<size_t, string> line) {
-        CM_C_STRING _line = trim_characters(line.second.c_str(), 0,
-                                            strlen(line.second.c_str()), ' ');
+    void scan_line_for_errors(const size_t line_id, CM_C_STRING line) {
+        CM_C_STRING _line = trim_characters(line, 0, strlen(line), ' ');
         size_t characters[2] = {0, 0};
 
-        for (size_t i = 0; i < strlen(line.second.c_str()); i++) {
-            if (line.second.c_str()[i] == '=' && characters[1] == 0)
+        for (size_t i = 0; i < strlen(line); i++) {
+            if (line[i] == '=' && characters[1] == 0)
                 characters[0]++;
-            if (line.second.c_str()[i] == '"')
+            if (line[i] == '"')
                 characters[1]++;
         }
 
-        if (line.second != "" &&
-            get_characters_count(line.second.c_str(), 0, line.second.size(),
-                                 ' ') != line.second.size()) {
+        if (strcmp(line, "") != 0 &&
+            get_characters_count(line, 0, strlen(line), ' ') != strlen(line)) {
             if (characters[0] != 1 || characters[1] != 2)
                 print_error("the line shoud be in the following style: line = "
                             "\"value\".",
-                            line.first);
+                            line_id);
 
-            if (get_characters_count(get_line_name(line.second.c_str()), 0,
-                                     strlen(line.second.c_str()), ' ') != 0)
-                print_error("spaces are not allowed in line names.",
-                            line.first);
+            if (get_characters_count(get_line_name(line), 0, strlen(line),
+                                     ' ') != 0)
+                print_error("spaces are not allowed in line names.", line_id);
 
             for (size_t i = 0; i < strlen(_line); i++) {
                 if (_line[i] == '=' && _line[i + 1] != '"')
-                    print_error("line contains undefined characters.",
-                                line.first);
+                    print_error("line contains undefined characters.", line_id);
             }
 
             if (_line[strlen(_line) - 1] != '"')
-                print_error("line contains undefined characters.", line.first);
+                print_error("line contains undefined characters.", line_id);
         }
     }
 
@@ -185,7 +187,7 @@ namespace cfg_manipulator {
 
             trim_comment(line);
 
-            if (is_namespace(line)) {
+            if (is_namespace(line_id, line)) {
                 if (!_namespace)
                     _namespace = true;
 
@@ -198,7 +200,7 @@ namespace cfg_manipulator {
                 continue;
             }
 
-            scan_line_for_errors(pair<size_t, string>(line_id, line));
+            scan_line_for_errors(line_id, line);
 
             if (!_namespace)
                 file_data.lines.push_back(pair<size_t, string>(line_id, line));
@@ -257,6 +259,8 @@ namespace cfg_manipulator {
 
 cfg_file::cfg_file() {}
 
+cfg_file::cfg_file(CM_C_STRING file_path) { open(file_path); }
+
 void cfg_file::open(CM_C_STRING file_path) {
     check_file_type(file_path);
 
@@ -288,7 +292,10 @@ CM_C_STRING cfg_file::read(CM_C_STRING line_name) {
     }
 
     if (strcmp(get_line_name(output), "") == 0)
-        print_error("", 0);
+        print_error(
+            string("Unable to find a line named \"" + string(line_name) + "\".")
+                .c_str(),
+            0);
 
     return get_line_value(output);
 }
@@ -307,9 +314,9 @@ CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
         }
 
         if (strcmp(get_line_name(output), "") == 0)
-            print_error(string("Unable to find line \"" + string(line_name) +
-                               "\" in namespace \"" + string(namespace_name) +
-                               "\".")
+            print_error(string("The line named \"" + string(line_name) +
+                               "\" couldn't be found in the namespace \"" +
+                               string(namespace_name) + "\".")
                             .c_str(),
                         0);
     } else

@@ -1,11 +1,5 @@
 #include "cfg_manipulator.hpp"
-#include <iostream>
-using namespace std;
 
-cfg_manipulator::cfg_file file;
+cfg_manipulator::cfg_file settings("settings.cfg");
 
-int main() {
-    file.open("settings.cfg");
-
-    cout << file.read("namespace", "line") << endl;
-}
+int main() { CM_LOG(settings.read("line")); }
