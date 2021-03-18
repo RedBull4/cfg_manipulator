@@ -267,7 +267,10 @@ void cfg_file::open(CM_C_STRING file_path) {
     if (access(file_path, F_OK) == 0)
         file = fopen(file_path, "r");
     else
-        print_error("No such file or directory.", 0);
+        print_error(
+            string("No such file or directory \"" + string(file_path) + "\".")
+                .c_str(),
+            0);
 
     parse_file();
 }
