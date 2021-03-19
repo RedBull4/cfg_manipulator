@@ -10,12 +10,13 @@ namespace cfg_manipulator {
         CM_C_STRING file_path;
     } file_data;
 
-    void print_error(CM_C_STRING message, size_t line_id) {
+    void print_error(string message, size_t line_id) {
         if (line_id > 0)
             printf("\x1B[31mERROR\x1B[0m[cfg_manipulator]: Line %s\n",
                    string(to_string(line_id) + ", " + message).c_str());
         else
-            printf("\x1B[31mERROR\x1B[0m[cfg_manipulator]: %s\n", message);
+            printf("\x1B[31mERROR\x1B[0m[cfg_manipulator]: %s\n",
+                   message.c_str());
 
         exit(EXIT_FAILURE);
     }
@@ -181,6 +182,9 @@ namespace cfg_manipulator {
         size_t line_id = 0;
         bool _namespace = false;
 
+        file_data.lines.clear();
+        file_data.namespaces.clear();
+
         while (fgets(line, WCHAR_MAX, file)) {
             line_id++;
 
@@ -269,10 +273,7 @@ void cfg_file::open(CM_C_STRING file_path) {
         file = fopen(file_path, "r");
         file_data.file_path = file_path;
     } else
-        print_error(
-            string("No such file or directory \"" + string(file_path) + "\".")
-                .c_str(),
-            0);
+        print_error("No such file or directory \""s + file_path + "\".", 0);
 
     parse_file();
 }
@@ -297,10 +298,7 @@ CM_C_STRING cfg_file::read(CM_C_STRING line_name) {
     }
 
     if (strcmp(get_line_name(output), "") == 0)
-        print_error(
-            string("Unable to find a line named \"" + string(line_name) + "\".")
-                .c_str(),
-            0);
+        print_error("Unable to find a line named \""s + line_name + "\".", 0);
 
     return get_line_value(output);
 }
@@ -319,21 +317,18 @@ CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
         }
 
         if (strcmp(get_line_name(output), "") == 0)
-            print_error(string("The line named \"" + string(line_name) +
-                               "\" couldn't be found in the namespace \"" +
-                               string(namespace_name) + "\".")
-                            .c_str(),
+            print_error("The line named \""s + line_name +
+                            "\" couldn't be found in the namespace \"" +
+                            namespace_name + "\".",
                         0);
     } else
-        print_error(string("Unable to find namespace \"" +
-                           string(namespace_name) + "\".")
-                        .c_str(),
-                    0);
+        print_error("Unable to find namespace \""s + namespace_name + "\".", 0);
 
     return get_line_value(output);
 }
 
-void change_line_value(size_t line_id, CM_C_STRING line, CM_C_STRING value) {
+CM_C_STRING change_line_value(size_t line_id, CM_C_STRING line,
+                              CM_C_STRING value) {
     CM_STRING output = standard_string(), first = standard_string(),
               second = standard_string();
     size_t begin_quote_id = 0;
@@ -357,9 +352,11 @@ void change_line_value(size_t line_id, CM_C_STRING line, CM_C_STRING value) {
     strcpy(output,
            string(string(first) + string(value) + string(second)).c_str());
 
-    system(string("sed -i '" + to_string(line_id) + " s/" + line + '/' +
-                  string(output) + "/g' " + string(file_data.file_path))
+    system(string("sed -i '" + to_string(line_id) + " s/" + line + "/" +
+                  output + "/g' "s + file_data.file_path)
                .c_str());
+
+    return output;
 }
 
 void cfg_file::change_value(CM_C_STRING line_name, CM_C_STRING value) {
@@ -368,23 +365,47 @@ void cfg_file::change_value(CM_C_STRING line_name, CM_C_STRING value) {
     if (!is_open())
         print_error("File is not open.", 0);
 
-    for (pair<size_t, string> line : file_data.lines) {
+    for (pair<size_t, string> &line : file_data.lines) {
         if (strcmp(line_name, get_line_name(line.second.c_str())) == 0) {
-            change_line_value(line.first, line.second.c_str(), value);
+            line.second =
+                change_line_value(line.first, line.second.c_str(), value);
             _bool = true;
         }
     }
 
     if (!_bool)
         print_error(
-            string("Unable to change the value of the line because the line \"" +
-                   string(line_name) + "\" was not found in the file. ")
-                .c_str(),
+            "Unable to change the value of the line, because the line \""s +
+                line_name + "\" was not found in the file. ",
             0);
 }
 
 void cfg_file::change_value(CM_C_STRING namespace_name, CM_C_STRING line_name,
                             CM_C_STRING value) {
+    bool _bool = false;
+
     if (!is_open())
         print_error("File is not open.", 0);
+
+    if (file_data.namespaces.count(namespace_name) != 0) {
+        for (pair<size_t, string> &line :
+             file_data.namespaces.at(namespace_name)) {
+            if (strcmp(line_name, get_line_name(line.second.c_str())) == 0) {
+                line.second =
+                    change_line_value(line.first, line.second.c_str(), value);
+                _bool = true;
+            }
+        }
+    } else
+        print_error("Unable to change the value of the line, because "
+                    "the namespace \""s +
+                        namespace_name + "\" was not found in the file.",
+                    0);
+
+    if (!_bool)
+        print_error(
+            "Unable to change the value of the line, because a line named \""s +
+                line_name + "\" could not be found in the namespace \"" +
+                namespace_name + "\".",
+            0);
 }
