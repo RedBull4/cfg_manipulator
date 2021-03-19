@@ -28,6 +28,11 @@ namespace cfg_manipulator {
         CM_C_STRING read(CM_C_STRING line_name);
 
         CM_C_STRING read(CM_C_STRING namespace_name, CM_C_STRING line_name);
+
+        void change_value(CM_C_STRING line_name, CM_C_STRING value);
+
+        void change_value(CM_C_STRING namespace_name, CM_C_STRING line_name,
+                          CM_C_STRING value);
     };
 } // namespace cfg_manipulator
 

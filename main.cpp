@@ -2,4 +2,4 @@
 
 cfg_manipulator::cfg_file settings("settings.cfg");
 
-int main() { CM_LOG(settings.read("line")); }
+int main() { settings.change_value("lines", " sawd"); }

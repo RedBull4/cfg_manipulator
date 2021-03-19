@@ -7,6 +7,7 @@ namespace cfg_manipulator {
     struct file_data {
         vector<pair<size_t, string>> lines;
         map<string, vector<pair<size_t, string>>> namespaces;
+        CM_C_STRING file_path;
     } file_data;
 
     void print_error(CM_C_STRING message, size_t line_id) {
@@ -264,9 +265,10 @@ cfg_file::cfg_file(CM_C_STRING file_path) { open(file_path); }
 void cfg_file::open(CM_C_STRING file_path) {
     check_file_type(file_path);
 
-    if (access(file_path, F_OK) == 0)
+    if (access(file_path, F_OK) == 0) {
         file = fopen(file_path, "r");
-    else
+        file_data.file_path = file_path;
+    } else
         print_error(
             string("No such file or directory \"" + string(file_path) + "\".")
                 .c_str(),
@@ -329,4 +331,60 @@ CM_C_STRING cfg_file::read(CM_C_STRING namespace_name, CM_C_STRING line_name) {
                     0);
 
     return get_line_value(output);
+}
+
+void change_line_value(size_t line_id, CM_C_STRING line, CM_C_STRING value) {
+    CM_STRING output = standard_string(), first = standard_string(),
+              second = standard_string();
+    size_t begin_quote_id = 0;
+    bool _bool = false;
+
+    for (size_t i = 0; i < strlen(line); i++) {
+        first[i] = line[i];
+        if (line[i] == '"') {
+            begin_quote_id = i + 1;
+            break;
+        }
+    }
+
+    for (size_t i = begin_quote_id; i < strlen(line); i++) {
+        if (line[i] == '"')
+            _bool = true;
+        if (_bool)
+            second[strlen(second)] = line[i];
+    }
+
+    strcpy(output,
+           string(string(first) + string(value) + string(second)).c_str());
+
+    system(string("sed -i '" + to_string(line_id) + " s/" + line + '/' +
+                  string(output) + "/g' " + string(file_data.file_path))
+               .c_str());
+}
+
+void cfg_file::change_value(CM_C_STRING line_name, CM_C_STRING value) {
+    bool _bool = false;
+
+    if (!is_open())
+        print_error("File is not open.", 0);
+
+    for (pair<size_t, string> line : file_data.lines) {
+        if (strcmp(line_name, get_line_name(line.second.c_str())) == 0) {
+            change_line_value(line.first, line.second.c_str(), value);
+            _bool = true;
+        }
+    }
+
+    if (!_bool)
+        print_error(
+            string("Unable to change the value of the line because the line \"" +
+                   string(line_name) + "\" was not found in the file. ")
+                .c_str(),
+            0);
+}
+
+void cfg_file::change_value(CM_C_STRING namespace_name, CM_C_STRING line_name,
+                            CM_C_STRING value) {
+    if (!is_open())
+        print_error("File is not open.", 0);
 }
