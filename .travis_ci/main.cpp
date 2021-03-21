@@ -1,5 +1,9 @@
 #include "../cfg_manipulator.hpp"
 
-cfg_manipulator::cfg_file settings("settings.cfg");
+cfg_manipulator::cfg_file settings;
 
-int main() { CM_LOG(settings.read("line")); }
+int main() {
+    settings.open("settings.cfg");
+
+    CM_LOG(settings.read("line"));
+}

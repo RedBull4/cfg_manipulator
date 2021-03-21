@@ -264,8 +264,6 @@ namespace cfg_manipulator {
 
 cfg_file::cfg_file() {}
 
-cfg_file::cfg_file(CM_C_STRING file_path) { open(file_path); }
-
 void cfg_file::open(CM_C_STRING file_path) {
     check_file_type(file_path);
 

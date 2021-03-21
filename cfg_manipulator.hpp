@@ -17,8 +17,6 @@ namespace cfg_manipulator {
       public:
         cfg_file();
 
-        cfg_file(CM_C_STRING file_path);
-
         void open(CM_C_STRING file_path);
 
         bool is_open();

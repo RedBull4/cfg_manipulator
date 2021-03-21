@@ -10,9 +10,12 @@
 
 #include "cfg_manipulator.hpp"
 
-cfg_manipulator::cfg_file settings("settings.cfg");
+cfg_manipulator::cfg_file settings;
 
 int main() {
+    // Opens file "settings.cfg"
+    settings.open("settings.cfg");
+
     // Reads line "line".
     CM_LOG(settings.read("line"));
     // Reads line "line" in namesapce "namespace".
