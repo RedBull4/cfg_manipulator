@@ -34,3 +34,5 @@ line = "value"
 [namespace]
 line = "value"
 ```
+## License
+[MIT](https://github.com/RedBull4/cfg_manipulator/blob/main/LICENSE)
