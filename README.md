@@ -5,6 +5,7 @@
 <p align="center">
   <img src="example.gif" />
 </p>
+
 ## Compilation
 * ```g++ -std=c++14 -Wall -Werror *.cpp```
 ## Code
