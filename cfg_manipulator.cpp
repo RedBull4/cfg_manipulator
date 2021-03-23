@@ -87,7 +87,8 @@ namespace cfg_manipulator {
 
         for (size_t i = 0; i < strlen(output); i++) {
             if (output[i] == ' ') {
-                print_error("spaces are not allowed in namespace names.", line_id, false);
+                print_error("spaces are not allowed in namespace names.",
+                            line_id, false);
                 break;
             }
         }
@@ -135,36 +136,37 @@ namespace cfg_manipulator {
 
     void scan_line_for_errors(const size_t line_id, CM_C_STRING line) {
         CM_C_STRING _line = trim_characters(line, 0, strlen(line), ' ');
-        size_t characters[2] = {0, 0};
+        size_t characters[2] = {0, 0}, first_quote_id = 0;
 
-        for (size_t i = 0; i < strlen(line); i++) {
-            if (line[i] == '=' && characters[1] == 0)
+        for (size_t i = 0; i < strlen(_line); i++) {
+            if (_line[i] == '=' && characters[1] == 0)
                 characters[0]++;
-            if (line[i] == '"')
+            if (_line[i] == '"') {
                 characters[1]++;
+
+                if (first_quote_id == 0)
+                    first_quote_id = i;
+            }
         }
 
-        if (strcmp(line, "") != 0 &&
-            get_characters_count(line, 0, strlen(line), ' ') != strlen(line)) {
+        if (strcmp(_line, "") != 0 &&
+            get_characters_count(_line, 0, strlen(_line), ' ') !=
+                strlen(_line)) {
             if (characters[0] != 1 || characters[1] != 2)
                 print_error("the line shoud be in the following style: line = "
                             "\"value\".",
                             line_id, false);
 
-            if (get_characters_count(get_line_name(line), 0, strlen(line),
+            if (get_characters_count(get_line_name(_line), 0, strlen(_line),
                                      ' ') != 0)
                 print_error("spaces are not allowed in line names.", line_id,
                             false);
 
-            for (size_t i = 0; i < strlen(_line); i++) {
-                if (_line[i] == '=' && _line[i + 1] != '"')
-                    print_error("line contains undefined characters.", line_id,
-                                false);
-            }
-
-            if (_line[strlen(_line) - 1] != '"')
+            if (_line[first_quote_id - 1] != '=' ||
+                _line[strlen(_line) - 1] != '"') {
                 print_error("line contains undefined characters.", line_id,
                             false);
+            }
         }
     }
 
