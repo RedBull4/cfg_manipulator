@@ -59,7 +59,7 @@ namespace cfg_manipulator {
         return true ? begin && end : false;
     }
 
-    CM_C_STRING get_namespace_name(CM_C_STRING line) {
+    CM_C_STRING get_namespace_name(size_t line_id, CM_C_STRING line) {
         CM_STRING output = standard_string();
         bool _begin = false, _bool = false;
 
@@ -83,6 +83,13 @@ namespace cfg_manipulator {
             if (output[(strlen(output) - 1) - i] != ' ')
                 break;
             output[(strlen(output) - 1) - i] = 0;
+        }
+
+        for (size_t i = 0; i < strlen(output); i++) {
+            if (output[i] == ' ') {
+                print_error("spaces are not allowed in namespace names.", line_id, false);
+                break;
+            }
         }
 
         return output;
@@ -204,7 +211,7 @@ namespace cfg_manipulator {
                 if (!_namespace)
                     _namespace = true;
 
-                strcpy(namespace_name, get_namespace_name(line));
+                strcpy(namespace_name, get_namespace_name(line_id, line));
 
                 file_data.namespaces.insert(
                     pair<string, vector<pair<size_t, string>>>(namespace_name,
