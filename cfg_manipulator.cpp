@@ -157,7 +157,7 @@ namespace cfg_manipulator {
                             "\"value\".",
                             line_id, false);
 
-            if (get_characters_count(get_line_name(_line), 0, strlen(_line),
+            if (get_characters_count(get_line_name(line), 0, strlen(line),
                                      ' ') != 0)
                 print_error("spaces are not allowed in line names.", line_id,
                             false);
