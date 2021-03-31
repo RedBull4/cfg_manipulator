@@ -35,7 +35,7 @@ namespace cfg_manipulator
     {
         CM_STRING output = standard_string();
 
-        memset(output, 0, WCHAR_MAX);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = begin; i < end; i++)
         {
@@ -74,7 +74,7 @@ namespace cfg_manipulator
         CM_STRING output = standard_string();
         bool _begin = false, _bool = false;
 
-        memset(output, 0, WCHAR_MAX);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = 0; i < strlen(line); i++)
         {
@@ -133,8 +133,8 @@ namespace cfg_manipulator
         CM_STRING _line = standard_string(), output = standard_string();
         bool _bool = false;
 
-        memset(_line, 0, WCHAR_MAX);
-        memset(output, 0, WCHAR_MAX);
+        memset(_line, 0, CHAR_MAX);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = 0; i < strlen(line); i++)
         {
@@ -207,7 +207,7 @@ namespace cfg_manipulator
         CM_STRING output = standard_string();
         bool quote = false;
 
-        memset(output, 0, WCHAR_MAX);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = 0; i < strlen(line); i++)
         {
@@ -240,8 +240,8 @@ namespace cfg_manipulator
         size_t line_id = 0;
         bool _namespace = false;
 
-        memset(line, 0, WCHAR_MAX);
-        memset(namespace_name, 0, WCHAR_MAX);
+        memset(line, 0, CHAR_MAX);
+        memset(namespace_name, 0, CHAR_MAX);
 
         file_data.lines.clear();
         file_data.namespaces.clear();
@@ -282,7 +282,7 @@ namespace cfg_manipulator
     {
         CM_STRING output = standard_string();
 
-        memset(output, 0, 260);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = 0; i < strlen(file_path) - 1; i++)
         {
@@ -321,7 +321,7 @@ namespace cfg_manipulator
         CM_STRING output = standard_string();
         bool _begin = false;
 
-        memset(output, 0, WCHAR_MAX);
+        memset(output, 0, CHAR_MAX);
 
         for (size_t i = 0; i < strlen(line); i++)
         {

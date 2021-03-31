@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
+#include <limits.h>
 using namespace std;
 
 #endif // cm_includes_hpp
