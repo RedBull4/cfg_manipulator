@@ -1,24 +1,24 @@
 #ifndef cm_includes_hpp
 #define cm_includes_hpp
 
-#include "cfg_manipulator.hpp"
-#include <map>
 #include <stdio.h>
 #include <string.h>
+#include <map>
 #include <string>
+#include "cfg_manipulator.hpp"
 
-#ifdef _WIN32
-#include <io.h>
+#if defined(WIN32) || defined(_WIN32) \
+	|| defined(__WIN32) && !defined(__CYGWIN__)
+	#include <io.h>
+#else
+	#include <unistd.h>
 #endif
 
-#ifdef linux
-#include <unistd.h>
-#endif
-
-#include <vector>
+#include <limits.h>
 #include <algorithm>
 #include <locale>
-#include <limits.h>
+#include <vector>
+
 using namespace std;
 
-#endif // cm_includes_hpp
+#endif	// cm_includes_hpp
