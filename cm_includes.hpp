@@ -6,7 +6,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+
+#ifdef _WIN32
 #include <io.h>
+#endif
+
+#ifdef linux
+#include <unistd.h>
+#endif
+
 #include <vector>
 #include <algorithm>
 #include <locale>
