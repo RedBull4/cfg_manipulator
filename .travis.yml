@@ -1,17 +1,8 @@
 language: cpp
 sudo: required
 dist: trusty
-
-compiler:
-  - gcc
-
-os:
-  - linux
-
-matrix:
-  exclude:
-    - os: linux
-      compiler: gcc
+compiler: gcc
+os: linux
 
 before_install:
   - sudo apt-get install -q g++-6 libstdc++-6-dev libboost-all-dev -y;
