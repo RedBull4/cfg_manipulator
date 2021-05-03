@@ -1,4 +1,4 @@
-CXX = g++ -std=c++14 -Wall -Werror
+CXX = g++ -Wall -Werror
 
 SOURCE_FILES = *.cpp ../linux/*.cpp
 
