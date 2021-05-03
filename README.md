@@ -1,6 +1,6 @@
 # cfg_manipulator [![Build Status](https://travis-ci.com/RedBull4/cfg_manipulator.svg?branch=main)](https://travis-ci.com/RedBull4/cfg_manipulator)
 * Copy ```cfg_manipulator.cpp```, ```cfg_manipulator.hpp``` and ```cm_includes.hpp``` to your project folder.
-* g++ version: >= 14.
+* GCC version: >= 6.
 ## GIF
 <p align="center">
   <img src="example.gif" />
