@@ -1,16 +1,19 @@
-language: cpp
-sudo: required
 dist: trusty
+sudo: require
+
+language: cpp
 compiler: gcc
-os: linux
 
-before_install:
-  - sudo apt-get install -q g++-6 libstdc++-6-dev libboost-all-dev -y;
-    sudo apt-get install libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
-  
-install:
-  - export CXX="g++-6"; 
-    export COMPILER="g++";
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-6
+      - g++-6
+      - make
 
-script: 
-  - cd .travis_ci && make && ./a.out 
+script:
+    - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
+    - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
+    - cd .travis_ci && make && ./a.out
