@@ -1,7 +1,26 @@
-compiler: gcc
+language: cpp
+
+sudo: required
 dist: trusty
 
-install: make get-deps g++
+compiler:
+  - gcc
+
+os:
+  - linux
+
+matrix:
+  exclude:
+    - os: linux
+      compiler: gcc
 
 before_install:
+  - sudo apt-get install -q g++-6 libstdc++-6-dev libboost-all-dev -y;
+    sudo apt-get install libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
+  
+install:
+  - export CXX="g++-6"; 
+    export COMPILER="g++";
+
+script: 
   - cd .travis_ci && make && ./a.out
