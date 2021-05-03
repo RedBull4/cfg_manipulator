@@ -22,4 +22,4 @@ install:
     export COMPILER="g++";
 
 script: 
-  - cd .travis_ci && make && ./a.out
+  - cd .travis_ci && make && ./a.out 
