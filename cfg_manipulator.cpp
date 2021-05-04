@@ -368,8 +368,6 @@ void _void(const size_t& line_id, const CM_C_STRING& line) {
 		lines.push_back(buffer);
 	}
 
-	fclose(file);
-
 	file = fopen(file_data.file_path, "w");
 
 	lines.at(line_id - 1) = line;
