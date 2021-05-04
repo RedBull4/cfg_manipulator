@@ -122,7 +122,7 @@ namespace cfg_manipulator {
 				break;
 			}
 			if (line[i] != ' ') _bool = true;
-			if (_bool) _line[strlen(_line)] = line[i];
+			if (_bool) append(_line, line[i]);
 		}
 
 		for (size_t i = 0; i < strlen(_line); i++) {
@@ -300,6 +300,8 @@ void cfg_file::open(const CM_C_STRING file_path) {
 
 	parse_file();
 
+	fclose(file);
+
 	if (file_data.errors) exit(EXIT_FAILURE);
 }
 
@@ -354,10 +356,34 @@ CM_C_STRING cfg_file::read(const CM_C_STRING namespace_name,
 	return get_line_value(output);
 }
 
+void _void(const size_t& line_id, const CM_C_STRING& line) {
+	vector<string> lines;
+	CM_STRING buffer = (char*)malloc(WCHAR_MAX);
+
+	file = fopen(file_data.file_path, "r");
+
+	while (fgets(buffer, WCHAR_MAX, file)) {
+		if (buffer[strlen(buffer) - 1] == '\n') buffer[strlen(buffer) - 1] = 0;
+
+		lines.push_back(buffer);
+	}
+
+	fclose(file);
+
+	file = fopen(file_data.file_path, "w");
+
+	lines.at(line_id - 1) = line;
+
+	for (size_t i = 0; i < lines.size(); i++)
+		fprintf(file, "%s\n", lines.at(i).c_str());
+
+	fclose(file);
+}
+
 CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING& line,
 							  const CM_C_STRING& value) {
-	CM_STRING output = standard_string(), first = standard_string(),
-			  second = standard_string();
+	CM_STRING output = standard_string();
+	char first[WCHAR_MAX], second[WCHAR_MAX];
 	size_t begin_quote_id = 0;
 	bool _bool = false;
 
@@ -377,9 +403,17 @@ CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING& line,
 	strcpy(output,
 		   string(string(first) + string(value) + string(second)).c_str());
 
+	memset(first, 0, WCHAR_MAX);
+	memset(second, 0, WCHAR_MAX);
+
+#if defined(WIN32) || defined(_WIN32) \
+	|| defined(__WIN32) && !defined(__CYGWIN__)
+	_void(line_id, output);
+#else
 	system(string("sed -i '" + to_string(line_id) + " s/" + line + "/" + output
 				  + "/g' "s + file_data.file_path)
 			   .c_str());
+#endif
 
 	return output;
 }
