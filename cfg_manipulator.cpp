@@ -27,6 +27,11 @@ namespace cfg_manipulator {
 
 	char* standard_string() { return (char*)malloc(WCHAR_MAX); }
 
+	void append(char* a, const char& b) {
+		a[strlen(a)] = b;
+		a[strlen(a) + 1] = '\0';
+	}
+
 	CM_C_STRING trim_characters(const CM_C_STRING str, const size_t begin,
 								const size_t end, CM_C_CHAR character) {
 		CM_STRING output = standard_string();
@@ -349,15 +354,15 @@ CM_C_STRING cfg_file::read(const CM_C_STRING namespace_name,
 	return get_line_value(output);
 }
 
-CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING line,
-							  const CM_C_STRING value) {
+CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING& line,
+							  const CM_C_STRING& value) {
 	CM_STRING output = standard_string(), first = standard_string(),
 			  second = standard_string();
 	size_t begin_quote_id = 0;
 	bool _bool = false;
 
 	for (size_t i = 0; i < strlen(line); i++) {
-		first[i] = line[i];
+		append(first, line[i]);
 		if (line[i] == '"') {
 			begin_quote_id = i + 1;
 			break;
@@ -366,7 +371,7 @@ CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING line,
 
 	for (size_t i = begin_quote_id; i < strlen(line); i++) {
 		if (line[i] == '"') _bool = true;
-		if (_bool) second[strlen(second)] = line[i];
+		if (_bool) append(second, line[i]);
 	}
 
 	strcpy(output,
