@@ -309,7 +309,11 @@ bool cfg_file::is_open() { return file != NULL; }
 
 void cfg_file::close() {
 	fclose(file);
+
 	file = NULL;
+
+	file_data.lines.clear();
+	file_data.namespaces.clear();
 }
 
 CM_C_STRING cfg_file::read(const CM_C_STRING line_name) {
