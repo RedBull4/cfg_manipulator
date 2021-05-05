@@ -2,7 +2,7 @@
 using namespace cfg_manipulator;
 
 namespace cfg_manipulator {
-	FILE* file;
+	FILE *file;
 
 	struct file_data {
 		vector<pair<size_t, string>> lines;
@@ -11,7 +11,8 @@ namespace cfg_manipulator {
 		bool errors = false;
 	} file_data;
 
-	void print_error(const string message, size_t line_id, bool _exit) {
+	void print_error(const string &message, const size_t &line_id,
+					 const bool &_exit) {
 		if (line_id > 0)
 			printf("\x1B[31mERROR\x1B[0m[cfg_manipulator]: Line %s\n",
 				   string(to_string(line_id) + ", " + message).c_str());
@@ -25,15 +26,15 @@ namespace cfg_manipulator {
 			file_data.errors = true;
 	}
 
-	char* standard_string() { return (char*)malloc(WCHAR_MAX); }
+	char *standard_string() { return (char *)malloc(WCHAR_MAX); }
 
-	void append(char* a, const char& b) {
+	void append(char *a, const char &b) {
 		a[strlen(a)] = b;
 		a[strlen(a) + 1] = '\0';
 	}
 
-	CM_C_STRING trim_characters(const CM_C_STRING str, const size_t begin,
-								const size_t end, CM_C_CHAR character) {
+	CM_C_STRING trim_characters(const CM_C_STRING &str, const size_t &begin,
+								const size_t &end, const CM_C_CHAR &character) {
 		CM_STRING output = standard_string();
 
 		memset(output, 0, CHAR_MAX);
@@ -45,7 +46,7 @@ namespace cfg_manipulator {
 		return output;
 	}
 
-	bool is_namespace(const size_t line_id, const CM_C_STRING line) {
+	bool is_namespace(const size_t &line_id, const CM_C_STRING &line) {
 		bool begin = false, end = false;
 		CM_C_STRING _line = trim_characters(line, 0, strlen(line), ' ');
 
@@ -63,7 +64,8 @@ namespace cfg_manipulator {
 		return true ? begin && end : false;
 	}
 
-	CM_C_STRING get_namespace_name(size_t line_id, const CM_C_STRING line) {
+	CM_C_STRING get_namespace_name(const size_t &line_id,
+								   const CM_C_STRING &line) {
 		CM_STRING output = standard_string();
 		bool _begin = false, _bool = false;
 
@@ -98,8 +100,8 @@ namespace cfg_manipulator {
 		return output;
 	}
 
-	size_t get_characters_count(const CM_C_STRING str, const size_t begin,
-								const size_t end, CM_C_CHAR character) {
+	size_t get_characters_count(const CM_C_STRING &str, const size_t &begin,
+								const size_t &end, const CM_C_CHAR &character) {
 		size_t output = 0;
 
 		for (size_t i = begin; i < end; i++) {
@@ -109,7 +111,7 @@ namespace cfg_manipulator {
 		return output;
 	}
 
-	CM_C_STRING get_line_name(const CM_C_STRING line) {
+	CM_C_STRING get_line_name(const CM_C_STRING &line) {
 		CM_STRING _line = standard_string(), output = standard_string();
 		bool _bool = false;
 
@@ -135,7 +137,7 @@ namespace cfg_manipulator {
 		return output;
 	}
 
-	void scan_line_for_errors(const size_t line_id, const CM_C_STRING line) {
+	void scan_line_for_errors(const size_t &line_id, const CM_C_STRING &line) {
 		CM_C_STRING _line = trim_characters(line, 0, strlen(line), ' ');
 		size_t characters[2] = {0, 0}, first_quote_id = 0;
 
@@ -170,7 +172,7 @@ namespace cfg_manipulator {
 		}
 	}
 
-	void trim_comment(CM_STRING& line) {
+	void trim_comment(CM_STRING &line) {
 		CM_STRING output = standard_string();
 		bool quote = false;
 
@@ -235,7 +237,7 @@ namespace cfg_manipulator {
 		}
 	}
 
-	CM_C_STRING get_file_type(const CM_C_STRING file_path) {
+	CM_C_STRING get_file_type(const CM_C_STRING &file_path) {
 		CM_STRING output = standard_string();
 
 		memset(output, 0, CHAR_MAX);
@@ -251,7 +253,7 @@ namespace cfg_manipulator {
 		return output;
 	}
 
-	void check_file_type(const CM_C_STRING file_path) {
+	void check_file_type(const CM_C_STRING &file_path) {
 		CM_STRING file_type = standard_string();
 
 		strcpy(file_type, get_file_type(file_path));
@@ -267,7 +269,7 @@ namespace cfg_manipulator {
 		}
 	}
 
-	CM_C_STRING get_line_value(const CM_C_STRING line) {
+	CM_C_STRING get_line_value(const CM_C_STRING &line) {
 		CM_STRING output = standard_string();
 		bool _begin = false;
 
@@ -288,7 +290,7 @@ namespace cfg_manipulator {
 
 cfg_file::cfg_file() {}
 
-void cfg_file::open(const CM_C_STRING file_path) {
+void cfg_file::open(const CM_C_STRING &file_path) {
 	check_file_type(file_path);
 
 	if (access(file_path, F_OK) == 0) {
@@ -316,7 +318,7 @@ void cfg_file::close() {
 	file_data.namespaces.clear();
 }
 
-CM_C_STRING cfg_file::read(const CM_C_STRING line_name) {
+CM_C_STRING cfg_file::read(const CM_C_STRING &line_name) {
 	CM_STRING output = standard_string();
 
 	if (!is_open()) print_error("File is not open.", 0, true);
@@ -335,8 +337,8 @@ CM_C_STRING cfg_file::read(const CM_C_STRING line_name) {
 	return get_line_value(output);
 }
 
-CM_C_STRING cfg_file::read(const CM_C_STRING namespace_name,
-						   const CM_C_STRING line_name) {
+CM_C_STRING cfg_file::read(const CM_C_STRING &namespace_name,
+						   const CM_C_STRING &line_name) {
 	CM_STRING output = standard_string();
 
 	if (!is_open()) print_error("File is not open.", 0, true);
@@ -360,9 +362,9 @@ CM_C_STRING cfg_file::read(const CM_C_STRING namespace_name,
 	return get_line_value(output);
 }
 
-void _void(const size_t& line_id, const CM_C_STRING& line) {
+void _void(const size_t &line_id, const CM_C_STRING &line) {
 	vector<string> lines;
-	CM_STRING buffer = (char*)malloc(WCHAR_MAX);
+	CM_STRING buffer = (char *)malloc(WCHAR_MAX);
 
 	file = fopen(file_data.file_path, "r");
 
@@ -382,8 +384,8 @@ void _void(const size_t& line_id, const CM_C_STRING& line) {
 	fclose(file);
 }
 
-CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING& line,
-							  const CM_C_STRING& value) {
+CM_C_STRING change_line_value(const size_t &line_id, const CM_C_STRING &line,
+							  const CM_C_STRING &value) {
 	CM_STRING output = standard_string();
 	char first[WCHAR_MAX], second[WCHAR_MAX];
 	size_t begin_quote_id = 0;
@@ -420,13 +422,13 @@ CM_C_STRING change_line_value(size_t line_id, const CM_C_STRING& line,
 	return output;
 }
 
-void cfg_file::change_value(const CM_C_STRING line_name,
-							const CM_C_STRING value) {
+void cfg_file::change_value(const CM_C_STRING &line_name,
+							const CM_C_STRING &value) {
 	bool _bool = false;
 
 	if (!is_open()) print_error("File is not open.", 0, true);
 
-	for (pair<size_t, string>& line : file_data.lines) {
+	for (pair<size_t, string> &line : file_data.lines) {
 		if (strcmp(line_name, get_line_name(line.second.c_str())) == 0) {
 			line.second
 				= change_line_value(line.first, line.second.c_str(), value);
@@ -441,15 +443,15 @@ void cfg_file::change_value(const CM_C_STRING line_name,
 			0, true);
 }
 
-void cfg_file::change_value(const CM_C_STRING namespace_name,
-							const CM_C_STRING line_name,
-							const CM_C_STRING value) {
+void cfg_file::change_value(const CM_C_STRING &namespace_name,
+							const CM_C_STRING &line_name,
+							const CM_C_STRING &value) {
 	bool _bool = false;
 
 	if (!is_open()) print_error("File is not open.", 0, true);
 
 	if (file_data.namespaces.count(namespace_name) != 0) {
-		for (pair<size_t, string>& line :
+		for (pair<size_t, string> &line :
 			 file_data.namespaces.at(namespace_name)) {
 			if (strcmp(line_name, get_line_name(line.second.c_str())) == 0) {
 				line.second

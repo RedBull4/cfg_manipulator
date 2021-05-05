@@ -12,8 +12,8 @@
 #endif
 
 typedef const char CM_C_CHAR;
-typedef char* CM_STRING;
-typedef CM_C_CHAR* CM_C_STRING;
+typedef char *CM_STRING;
+typedef CM_C_CHAR *CM_C_STRING;
 
 namespace cfg_manipulator {
 	CM_C_STRING const allowed_file_types[] = {".cfg", ".conf", ".config"};
@@ -22,20 +22,23 @@ namespace cfg_manipulator {
 	  public:
 		cfg_file();
 
-		void open(CM_C_STRING file_path);
+		void open(const CM_C_STRING &file_path);
 
 		bool is_open();
 
 		void close();
 
-		CM_C_STRING read(CM_C_STRING line_name);
+		CM_C_STRING read(const CM_C_STRING &line_name);
 
-		CM_C_STRING read(CM_C_STRING namespace_name, CM_C_STRING line_name);
+		CM_C_STRING read(const CM_C_STRING &namespace_name,
+						 const CM_C_STRING &line_name);
 
-		void change_value(CM_C_STRING line_name, CM_C_STRING value);
+		void change_value(const CM_C_STRING &line_name,
+						  const CM_C_STRING &value);
 
-		void change_value(CM_C_STRING namespace_name, CM_C_STRING line_name,
-						  CM_C_STRING value);
+		void change_value(const CM_C_STRING &namespace_name,
+						  const CM_C_STRING &line_name,
+						  const CM_C_STRING &value);
 	};
 }  // namespace cfg_manipulator
 
