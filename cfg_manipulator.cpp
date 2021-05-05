@@ -79,7 +79,7 @@ namespace cfg_manipulator {
 
 			if (line[i] == ']') break;
 
-			if (_bool) output[strlen(output)] = line[i];
+			if (_bool) append(output, line[i]);
 		}
 
 		for (size_t i = 0; i < strlen(output); i++) {
@@ -241,7 +241,7 @@ namespace cfg_manipulator {
 		memset(output, 0, CHAR_MAX);
 
 		for (size_t i = 0; i < strlen(file_path) - 1; i++) {
-			output[i] = file_path[(strlen(file_path) - 1) - i];
+			append(output, file_path[(strlen(file_path) - 1) - i]);
 
 			if (file_path[(strlen(file_path) - 1) - i] == '.') break;
 		}
@@ -279,7 +279,7 @@ namespace cfg_manipulator {
 				continue;
 			}
 			if (line[i] == '"' && _begin) break;
-			if (_begin) output[strlen(output)] = line[i];
+			if (_begin) append(output, line[i]);
 		}
 
 		return output;
