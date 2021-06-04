@@ -1,0 +1,22 @@
+[
+{
+  "directory": "C:/Users/alexa/Desktop/sawd/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe  @CMakeFiles/OpenGL.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\OpenGL.dir\\main.cpp.obj -c C:\\Users\\alexa\\Desktop\\sawd\\main.cpp",
+  "file": "C:/Users/alexa/Desktop/sawd/main.cpp"
+},
+{
+  "directory": "C:/Users/alexa/Desktop/sawd/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe  @CMakeFiles/OpenGL.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\OpenGL.dir\\cfg_manipulator.cpp.obj -c C:\\Users\\alexa\\Desktop\\sawd\\cfg_manipulator.cpp",
+  "file": "C:/Users/alexa/Desktop/sawd/cfg_manipulator.cpp"
+},
+{
+  "directory": "C:/Users/alexa/Desktop/sawd/build",
+  "command": "C:\\MinGW\\bin\\mingw32-gcc.exe  @CMakeFiles/OpenGL.dir/includes_C.rsp -g -o CMakeFiles\\OpenGL.dir\\glad.c.obj -c C:\\Users\\alexa\\Desktop\\sawd\\glad.c",
+  "file": "C:/Users/alexa/Desktop/sawd/glad.c"
+},
+{
+  "directory": "C:/Users/alexa/Desktop/sawd/build",
+  "command": "C:\\MinGW\\bin\\mingw32-g++.exe  @CMakeFiles/OpenGL.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\OpenGL.dir\\shaderLoader.cpp.obj -c C:\\Users\\alexa\\Desktop\\sawd\\shaderLoader.cpp",
+  "file": "C:/Users/alexa/Desktop/sawd/shaderLoader.cpp"
+}
+]

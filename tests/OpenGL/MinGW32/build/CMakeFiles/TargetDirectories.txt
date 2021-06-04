@@ -1,0 +1,3 @@
+C:/Users/alexa/Desktop/sawd/build/CMakeFiles/OpenGL.dir
+C:/Users/alexa/Desktop/sawd/build/CMakeFiles/edit_cache.dir
+C:/Users/alexa/Desktop/sawd/build/CMakeFiles/rebuild_cache.dir

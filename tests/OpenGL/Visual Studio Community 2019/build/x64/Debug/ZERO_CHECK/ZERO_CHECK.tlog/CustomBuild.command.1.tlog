@@ -1,0 +1,10 @@
+^C:\USERS\ALEXA\DESKTOP\CFG_MANIPULATOR\TESTS\OPENGL\VISUAL STUDIO COMMUNITY 2019\BUILD\CMAKEFILES\EB19C6F6492411CD150C6B80B805DBAD\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/alexa/Desktop/cfg_manipulator/tests/OpenGL/Visual Studio Community 2019" "-BC:/Users/alexa/Desktop/cfg_manipulator/tests/OpenGL/Visual Studio Community 2019/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/alexa/Desktop/cfg_manipulator/tests/OpenGL/Visual Studio Community 2019/build/OpenGL.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

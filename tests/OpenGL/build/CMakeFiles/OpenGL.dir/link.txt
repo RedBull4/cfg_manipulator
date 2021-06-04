@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\OpenGL.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\OpenGL.dir/objects.a @CMakeFiles\OpenGL.dir\objects1.rsp
-C:\MinGW\bin\mingw32-g++.exe -g -Wl,--whole-archive CMakeFiles\OpenGL.dir/objects.a -Wl,--no-whole-archive -o OpenGL.exe -Wl,--out-implib,libOpenGL.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\OpenGL.dir\linklibs.rsp

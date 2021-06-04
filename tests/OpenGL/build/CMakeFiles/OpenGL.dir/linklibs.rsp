@@ -1,1 +1,0 @@
- C:/glfw-3.3.4.bin.WIN32/lib-mingw/glfw3.dll -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

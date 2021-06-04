@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\alexa\Desktop\cfg_manipulator\tests\OpenGL\Visual Studio Community 2019\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\alexa\Desktop\cfg_manipulator\tests\OpenGL\Visual Studio Community 2019\cfg_manipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\alexa\Desktop\cfg_manipulator\tests\OpenGL\Visual Studio Community 2019\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\alexa\Desktop\cfg_manipulator\tests\OpenGL\Visual Studio Community 2019\shaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\alexa\Desktop\cfg_manipulator\tests\OpenGL\Visual Studio Community 2019\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{68D7CD81-132F-3EFD-AAA2-DED3639E258D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
