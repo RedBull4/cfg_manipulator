@@ -1,4 +1,23 @@
-#include "cm_includes.hpp"
+#include "cfg_manipulator.hpp"
+
+#include <stdio.h>
+#include <string.h>
+#include <map>
+#include <string>
+
+#if defined(WIN32) || defined(_WIN32) \
+	|| defined(__WIN32) && !defined(__CYGWIN__)
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
+
+#include <limits.h>
+#include <algorithm>
+#include <locale>
+#include <vector>
+
+using namespace std;
 using namespace cfg_manipulator;
 
 namespace cfg_manipulator {
@@ -160,7 +179,8 @@ namespace cfg_manipulator {
 					line_id, false);
 
 			if (get_characters_count(get_line_name(line), 0, strlen(line), ' ')
-				!= 0)
+					!= 0
+				&& characters[0] > 0 && characters[1] > 0)
 				print_error("spaces are not allowed in line names.", line_id,
 							false);
 
